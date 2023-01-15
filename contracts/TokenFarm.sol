@@ -41,4 +41,34 @@ contract TokenFarm {
         isStaking[msg.sender] = true;
         hasStaked[msg.sender] = true;
     }
+
+    // Token unstaking
+    function unstakeTokens(uint _amount) public {
+        // User staking balance
+        uint balance = stakingBalance[msg.sender];
+        // A quantity greater than 0 is required
+        require(balance >= _amount, "The amount to withdraw is less than the amount staked");
+        // Transfer of tokens to the user
+        jamToken.transfer(msg.sender, _amount);
+        // Update staking status
+        stakingBalance[msg.sender] -= _amount;
+        if(stakingBalance[msg.sender] == 0){
+            isStaking[msg.sender] = false;
+        }
+    }
+
+    // Withdraw all staked tokens
+    function withdrawAll() public {
+        // User staking balance
+        uint balance = stakingBalance[msg.sender];
+        // A quantity greater than 0 is required
+        require(balance > 0, "Staking balance is 0");
+        // Transfer of tokens to the user
+        jamToken.transfer(msg.sender, balance);
+        // Update staking status
+        stakingBalance[msg.sender] = 0;
+        isStaking[msg.sender] = false;
+    }
+
+    
 }
